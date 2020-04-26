@@ -12,5 +12,6 @@ class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=20, blank=False, default=None)
     nickname = models.CharField(max_length=30, blank=False, default=None)
+    email = models.CharField(max_length=100, blank=False, default=None)
     phone_number = models.CharField(max_length=20, blank=False, default=None)
     gender = models.CharField(max_length=1, default=Gender.OTHER, blank=True, choices=Gender.choices)
