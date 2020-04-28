@@ -3,7 +3,17 @@ User service with Django
 
 # How to run
 
+1. `docker-compose up`
+
+or
+
 1. `docker build -t <image_name> .`
+
+2. `docker exec -t -i <container_id> bash`
+
+3. Run `python manage.py migrate`
+
+3. `docker run -p 8000:8000 <image_name>`
 
 # API Endpoints
 
