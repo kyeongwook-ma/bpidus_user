@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
@@ -17,28 +17,16 @@ class UserSearchView(viewsets.ModelViewSet):
     authentication_class = JSONWebTokenAuthentication
     pagination_class = PageNumberPagination
     pagination_class.page_size = 10
-    queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'email']
+    search_fields = ['name', 'email']
 
     def retrieve(self, request, pk=None):
         user = get_object_or_404(self.queryset, pk=pk)
         serializer = UserProfileSerializer(user)
         return Response(serializer.data)
-
-    def get(self, request):
-
-        get_result = []
-        name = self.request.query_params.get('name', None)
-        email = self.request.query_params.get('email', None)
-
-        if name:
-            get_result.extend(list(UserProfile.objects.filter(name=name).values()))
-        if email:
-            get_result.extend(list(UserProfile.objects.filter(email=email).values()))
-
-        status_code = status.HTTP_200_OK if get_result else status.HTTP_204_NO_CONTENT
-
-        return JsonResponse(get_result, status=status_code, safe=False)
 
 
 class UserLoginView(RetrieveAPIView):
