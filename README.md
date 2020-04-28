@@ -113,11 +113,11 @@ curl --location --request POST 'localhost:8000/api/token/refresh' \
 
 ## Search user
 
-- `GET /api/profiles/search`
+- `GET /api/profiles/?name=Sample`
 
 ```json
 {
-    "count": 2,
+    "count": 1,
     "next": null,
     "previous": null,
     "results": [
@@ -127,12 +127,25 @@ curl --location --request POST 'localhost:8000/api/token/refresh' \
             "phone_number": "010-0000-0000",
             "email": "ram@gmail.com",
             "gender": "M"
-        },
+        }
+    ]
+}
+```
+
+
+- `GET /api/profiles/?email=ram@gmail.com`
+
+```json
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
         {
             "name": "Sample",
-            "nickname": "Doe",
+            "nickname": "example",
             "phone_number": "010-0000-0000",
-            "email": "example3m@gmail.com",
+            "email": "ram@gmail.com",
             "gender": "M"
         }
     ]
