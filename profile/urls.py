@@ -1,7 +1,13 @@
-from django.conf.urls import url
+from django.urls import include
+from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from profile.views import UserProfileView
+from profile.views import UserSearchView
+
+router = DefaultRouter()
+router.register(r'profiles', UserSearchView, basename='profiles')
 
 urlpatterns = [
-    url(r'^profile', UserProfileView.as_view()),
+    path('', include(router.urls)),
+
 ]

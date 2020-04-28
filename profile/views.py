@@ -1,23 +1,29 @@
 from django.http import JsonResponse
-from rest_framework import mixins
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from profile.models import UserProfile
-from user.serializers import UserLoginSerializer, UserProfileSerializer
+from profile.serializers import UserProfileSerializer
+from user.serializers import UserLoginSerializer
 
 
-class UserProfileView(RetrieveAPIView):
+class UserSearchView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     authentication_class = JSONWebTokenAuthentication
     pagination_class = PageNumberPagination
     pagination_class.page_size = 10
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+    def retrieve(self, request, pk=None):
+        user = get_object_or_404(self.queryset, pk=pk)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
 
     def get(self, request):
 
@@ -33,19 +39,6 @@ class UserProfileView(RetrieveAPIView):
         status_code = status.HTTP_200_OK if get_result else status.HTTP_204_NO_CONTENT
 
         return JsonResponse(get_result, status=status_code, safe=False)
-
-
-class UserSearchView(mixins.RetrieveModelMixin, mixins.ListModelMixin,
-                     viewsets.GenericViewSet):
-    permission_classes = (IsAuthenticated,)
-    authentication_class = JSONWebTokenAuthentication
-
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    filter_backends = (SearchFilter,)
-    search_fields = ('name', 'email')
-    pagination_class = PageNumberPagination
-    pagination_class.page_size = 10
 
 
 class UserLoginView(RetrieveAPIView):
